@@ -22,6 +22,12 @@ export interface ShopProps {
     prod_id: string,
     quantity: number, 
     order_id?: string
+
+    // "character_name": "R2-D2",
+    // "homeworld": "Naboo",
+    // "price": "11.99",
+    // "prod_id": "bbd5e926-025e-4f64-bbd1-a5f5a72351a8",
+    // "quantity": 20
 }
 
 interface GetShopDataProps {
@@ -49,5 +55,33 @@ export const useGetShop = (): GetShopDataProps => {
     }, []) //[] inside list is variable we are watching/listening to for changes 
 
     return { shopData, getData: handleDataFetch }
+
+}
+
+interface GetOrderDataProps {
+    orderData: ShopProps[]
+    getData: () => void
+}
+
+
+// create our custom hook that get's called automatically when we go to our Order page
+export const useGetOrder = (): GetOrderDataProps => {
+    // setup some hooks
+    const [ orderData, setShopData ] = useState<ShopProps[]>([])
+
+
+    const handleDataFetch = async () => {
+        const result = await serverCalls.getOrder() //making the api call from our serverCall dictionary/object
+
+        setShopData(result)
+    }
+
+    // useEffect is essentially an event listener listening for changes to variables 
+    // takes 2 arguments, 1 is the function to run, the 2nd is the variable we are watching in a []
+    useEffect(()=> {
+        handleDataFetch()
+    }, []) //[] inside list is variable we are watching/listening to for changes 
+
+    return { orderData, getData: handleDataFetch }
 
 }
